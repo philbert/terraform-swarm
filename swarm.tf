@@ -20,7 +20,7 @@ resource "template_file" "discovery_url" {
 }
 
 resource "template_file" "cloud_init" {
-    template = "templates/cloud-init"
+    template = "${file("templates/cloud-init")}"
     vars {
         cluster_token = "${var.cluster_name}"
         discovery_url = "${template_file.discovery_url.rendered}"
@@ -29,7 +29,7 @@ resource "template_file" "cloud_init" {
 }
 
 resource "template_file" "10_docker_service" {
-    template = "templates/10-docker-service.conf"
+    template = "${file("templates/10-docker-service.conf")}"
 }
 
 resource "openstack_networking_floatingip_v2" "coreos" {

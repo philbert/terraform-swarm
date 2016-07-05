@@ -1,13 +1,13 @@
 variable "image_name" {
-    default = "coreos"
+    default = "coreos-935.0.0"
 }
 
 variable "network_name" {
-    default = "internal"
+    default = "int-net-01"
 }
 
 variable "floatingip_pool" {
-    default = "external"
+    default = "ext-net-01"
 }
 
 variable "flavor" {
