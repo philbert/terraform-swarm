@@ -1,5 +1,5 @@
 variable "image_name" {
-    default = "coreos-935.0.0"
+    default = "coreos-1097.0.0"
 }
 
 variable "network_name" {
