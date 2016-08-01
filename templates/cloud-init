@@ -23,6 +23,8 @@ coreos:
         ExecStartPre=-/usr/bin/docker rm -f swarm-agent
         ExecStart=/bin/sh -c "/usr/bin/docker run --rm --name swarm-agent swarm:${swarm_version} join --addr=$COREOS_PRIVATE_IPV4:2376 etcd://$COREOS_PRIVATE_IPV4:2379/docker"
         ExecStop=/usr/bin/docker stop swarm-agent
+        Restart=always
+        RestartSec=3
     - name: swarm-manager.service
       command: enable
       content: |
@@ -38,6 +40,8 @@ coreos:
         ExecStartPre=-/usr/bin/docker rm -f swarm-manager
         ExecStart=/bin/sh -c "/usr/bin/docker run --rm --name swarm-manager -v /etc/docker/ssl:/etc/docker/ssl --net=host swarm:${swarm_version} manage --tlsverify --tlscacert=/etc/docker/ssl/ca.pem --tlscert=/etc/docker/ssl/cert.pem --tlskey=/etc/docker/ssl/key.pem etcd://$COREOS_PRIVATE_IPV4:2379/docker"
         ExecStop=/usr/bin/docker stop swarm-manager
+        Restart=always
+        RestartSec=3
   etcd2:
     discovery: ${discovery_url}
     advertise-client-urls: http://$private_ipv4:2379
