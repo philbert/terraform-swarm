@@ -1,6 +1,13 @@
 resource "openstack_compute_secgroup_v2" "swarm_base" {
   name = "${var.cluster_name}_swarm_base"
   description = "${var.cluster_name} - Docker Swarm Security Group"
+  # HTTP
+  rule {
+    ip_protocol = "tcp"
+    from_port = "80"
+    to_port = "80"
+    cidr = "${var.whitelist_network}"
+  }
   # SSH
   rule {
     ip_protocol = "tcp"
