@@ -91,6 +91,8 @@ resource "openstack_compute_instance_v2" "coreos" {
             "sudo systemctl restart docker.service",
             "sudo systemctl start swarm-agent.service",
             "sudo systemctl start swarm-manager.service",
+            "sudo systemctl enable swarm-agent.service",
+            "sudo systemctl enable swarm-manager.service",
         ]
         connection {
             user = "core"

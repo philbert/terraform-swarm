@@ -13,35 +13,37 @@ coreos:
       content: |
         [Unit]
         Description=swarm agent
-        Requires=docker.service
         After=docker.service
 
         [Service]
         EnvironmentFile=/etc/environment
         TimeoutStartSec=20m
         ExecStartPre=/usr/bin/docker pull swarm:${swarm_version}
-        ExecStartPre=-/usr/bin/docker rm -f swarm-agent
-        ExecStart=/bin/sh -c "/usr/bin/docker run --rm --name swarm-agent swarm:${swarm_version} join --addr=$COREOS_PRIVATE_IPV4:2376 etcd://$COREOS_PRIVATE_IPV4:2379/docker"
+        ExecStart=-/bin/sh -c "/usr/bin/docker run --rm --name swarm-agent swarm:${swarm_version} join --addr=$COREOS_PRIVATE_IPV4:2376 etcd://$COREOS_PRIVATE_IPV4:2379/docker"
         ExecStop=/usr/bin/docker stop swarm-agent
-        Restart=always
+        Restart=on-failure
         RestartSec=3
+
+        [Install]
+        WantedBy=multi-user.target
     - name: swarm-manager.service
       command: enable
       content: |
         [Unit]
         Description=swarm manager
-        Requires=docker.service
         After=docker.service
 
         [Service]
         EnvironmentFile=/etc/environment
         TimeoutStartSec=20m
         ExecStartPre=/usr/bin/docker pull swarm:${swarm_version}
-        ExecStartPre=-/usr/bin/docker rm -f swarm-manager
-        ExecStart=/bin/sh -c "/usr/bin/docker run --rm --name swarm-manager -v /etc/docker/ssl:/etc/docker/ssl --net=host swarm:${swarm_version} manage --tlsverify --tlscacert=/etc/docker/ssl/ca.pem --tlscert=/etc/docker/ssl/cert.pem --tlskey=/etc/docker/ssl/key.pem etcd://$COREOS_PRIVATE_IPV4:2379/docker"
+        ExecStart=-/bin/sh -c "/usr/bin/docker run --rm --name swarm-manager -v /etc/docker/ssl:/etc/docker/ssl --net=host swarm:${swarm_version} manage --tlsverify --tlscacert=/etc/docker/ssl/ca.pem --tlscert=/etc/docker/ssl/cert.pem --tlskey=/etc/docker/ssl/key.pem etcd://$COREOS_PRIVATE_IPV4:2379/docker"
         ExecStop=/usr/bin/docker stop swarm-manager
-        Restart=always
+        Restart=on-failure
         RestartSec=3
+
+        [Install]
+        WantedBy=multi-user.target
   etcd2:
     discovery: ${discovery_url}
     advertise-client-urls: http://$private_ipv4:2379
